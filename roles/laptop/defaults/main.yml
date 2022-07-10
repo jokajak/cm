@@ -1,0 +1,24 @@
+---
+# defaults file for laptop
+required_packages:
+  - buildah
+  - fzf
+  - htop
+  - podman
+  - podman-compose
+  - podman-docker
+  - skopeo
+  - starship
+
+python_packages:
+  - ansible-navigator
+  - black  # code formatter
+  - flake8  # code linter
+  - icecream  # better debugging
+  - poetry  # dependency management
+  - pre-commit
+  - ptpython  # a better python REPL
+  - q  # debugging to files
+  - virtualenvwrapper
+
+dotfiles: []

@@ -1,0 +1,14 @@
+---
+# defaults file for common
+common_packages:
+  - git
+  - starship
+  - stow
+  - tmux
+  - vim-enhanced
+  - zsh
+
+dotfiles:
+  - starship
+  - zsh
+  - neovim

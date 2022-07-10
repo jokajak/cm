@@ -1,0 +1,67 @@
+---
+# tasks file for common
+- name: Root tasks
+  become: yes
+  block:
+  - name: Install packages
+    package:
+      state: present
+      name: '{{ common_packages }}'
+
+  - name: Ensure SELinux Enforcing
+    selinux:
+      policy: targeted
+      state: enforcing
+
+  - name: Enable container_manage_cgroup for running systemd in podman containers
+    seboolean:
+      name: container_manage_cgroup
+      state: true
+      persistent: true
+
+- name: Clone dotfiles
+  vars:
+    user_home: "{{ lookup('env', 'HOME') }}"
+  ansible.builtin.git:
+    repo: 'git@github.com:jokajak/dotfiles.git'
+    dest: '{{ user_home }}/.dotfiles'
+    recursive: yes
+    update: yes
+    accept_hostkey: yes
+    version: main
+
+- name: Deploy dotfiles
+  vars:
+    user_home: "{{ lookup('env', 'HOME') }}"
+  environment:
+    STOW_DIR: "{{ user_home }}/.dotfiles"
+  ansible.builtin.shell: |
+    stow {{ item }}
+  changed_when: false
+  loop: '{{ dotfiles }}'
+
+- name: Configure git
+  community.general.git_config:
+    name: '{{ item.name }}'
+    scope: global
+    value: '{{ item.value }}'
+  loop:
+    - name: user.name
+      value: Josh
+    - name: user.email
+      value: jokajak@gmail.com
+
+- name: Ensure neovim directories exist
+  vars:
+    user_home: "{{ lookup('env', 'HOME') }}"
+  ansible.builtin.file:
+    path: '{{ user_home }}/.local/share/nvim/site/autoload/'
+    state: 'directory'
+    mode: '0750'
+    
+- name: Set up vim-plug for neovim
+  vars:
+    user_home: "{{ lookup('env', 'HOME') }}"
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest: '{{ user_home }}/.local/share/nvim/site/autoload/'

@@ -1,0 +1,30 @@
+---
+# tasks file for laptop
+- name: Install packages
+  become: yes
+  package:
+    state: present
+    name: '{{ required_packages }}'
+
+- name: Ensure user python packages
+  become: no
+  ansible.builtin.pip:
+    name: '{{ python_packages }}'
+
+- name: Deploy dotfiles
+  vars:
+    user_home: "{{ lookup('env', 'HOME') }}"
+  environment:
+    STOW_DIR: "{{ user_home }}/.dotfiles"
+  ansible.builtin.command: stow {{ item }}
+  changed_when: false
+  loop: '{{ dotfiles }}'
+
+- name: check for local poetry bash completions
+  stat:
+    path: ~/.local/poetry.bash-completion
+  register: poetry_stat
+
+- name: generate local poetry bash completions if they aren't present
+  shell: ~/.local/bin/poetry completions bash > ~/.local/poetry.bash-completion
+  when: not poetry_stat.stat.exists
