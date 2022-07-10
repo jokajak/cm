@@ -20,5 +20,8 @@ python_packages:
   - ptpython  # a better python REPL
   - q  # debugging to files
   - virtualenvwrapper
+  - python-lsp-server  # language server protocol
+  - python-lsp-server[flake8]  # flake8 support
+  - python-lsp-black  # code formatting using black
 
 dotfiles: []
