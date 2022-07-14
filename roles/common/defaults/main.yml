@@ -1,6 +1,7 @@
 ---
 # defaults file for common
 common_packages:
+  - fzf
   - git
   - starship
   - stow

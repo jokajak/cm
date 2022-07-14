@@ -2,13 +2,13 @@
 # defaults file for laptop
 required_packages:
   - buildah
-  - fzf
   - htop
   - podman
   - podman-compose
   - podman-docker
   - skopeo
-  - starship
+  - powerline-fonts
+  - powerline
 
 python_packages:
   - ansible-navigator
